@@ -8,12 +8,13 @@
 -->
 # 医疗图像诊断
 
-运行环境：
+- 运行环境：
+
 PyTorch
 
 PyQt5
 
-启动
+- 启动
 ```python
 python main.py
 ```
