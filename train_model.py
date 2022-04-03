@@ -4,7 +4,7 @@
 @FilePath: train_model.py
 @Author: Xu Mingyu
 @Date: 2022-03-26 19:53:31
-@LastEditTime: 2022-03-26 23:00:32
+@LastEditTime: 2022-04-03 18:48:30
 @Description: 
 @Copyright 2022 Xu Mingyu, All Rights Reserved. 
 """
@@ -19,7 +19,7 @@ import torch.optim as optim
 from utils import get_train_val_data, BUSI_Dataset, train_transform, valid_transform
 import setting
 
-from model import AlexNet
+from model import AlexNet, CNN
 
 import pdb
 
@@ -33,7 +33,8 @@ def main():
         train_loader = DataLoader(dataset=train_data, batch_size=setting.BATCH_SIZE, shuffle=True)
         valid_loader = DataLoader(dataset=valid_data, batch_size=1)
 
-        model = AlexNet(3, init_weights=True)
+        # model = AlexNet(3, init_weights=True)
+        model = CNN(3)
         model.to(setting.DEVICE)
 
         criterion = nn.CrossEntropyLoss()
@@ -41,6 +42,7 @@ def main():
         
         max_acc = 0.
         reached = 0  # which epoch reached the max accuracy
+        best_confusion_mat = None
 
         for epoch in range(1, setting.MAX_EPOCH + 1):
             loss_mean = 0.
@@ -92,14 +94,15 @@ def main():
                     loss_val = loss_val / total
                     val_acc = correct / total
 
-                    if val_acc > max_acc:
-                        max_acc = val_acc
-                        reached = epoch
-                        torch.save(model, os.path.join(setting.MODEL_PATH, "AlexNet_fold_%d.pt" % fold))
-
                     y_true = torch.cat(y_true).cpu().numpy()
                     y_pred = torch.cat(y_pred).cpu().numpy()
                     matrix = confusion_matrix(y_true, y_pred)
+
+                    if val_acc > max_acc:
+                        max_acc = val_acc
+                        reached = epoch
+                        best_confusion_mat = matrix
+                        torch.save(model, os.path.join(setting.MODEL_PATH, "3layer-CNN_fold_%d.pt" % fold))
 
                     print("Valid:\t Epoch[{:0>3}/{:0>3}] Iteration[{:0>3}/{:0>3}] Loss: {:.4f} Acc:{:.2%}\n".format(
                         epoch, setting.MAX_EPOCH, i+1, len(valid_loader), loss_val, val_acc))
@@ -107,6 +110,7 @@ def main():
                     print("\n")
 
         print('The max validation accuracy is: {:.2%}, reached at epoch {}.\n'.format(max_acc, reached))
+        print("Best Confustion Matrix: \n", best_confusion_mat)
 
 if __name__ == '__main__':
     main()

@@ -4,7 +4,7 @@
 @FilePath: utils.py
 @Author: Xu Mingyu
 @Date: 2022-03-26 19:53:12
-@LastEditTime: 2022-03-26 23:09:28
+@LastEditTime: 2022-04-03 18:44:54
 @Description: 
 @Copyright 2022 Xu Mingyu, All Rights Reserved. 
 """
@@ -15,6 +15,8 @@ from sklearn.model_selection import StratifiedKFold, train_test_split
 import torch
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
+
+import setting
 
 
 def parse_label(img_path):
@@ -44,7 +46,7 @@ def get_train_val_data(data_dir, k=5, isFold=True):
             val_labels = labels[test_index]
             yield train_image_files, val_image_files, train_labels, val_labels
     else:
-        train_image_files, val_image_files, train_labels, val_labels = train_test_split(image_paths, labels, test_size=0.2, random_state=6001, stratify=labels)
+        train_image_files, val_image_files, train_labels, val_labels = train_test_split(image_paths, labels, test_size=0.2, random_state=0, stratify=labels)
         yield train_image_files, val_image_files, train_labels, val_labels
 
 class BUSI_Dataset(Dataset):
@@ -64,14 +66,14 @@ class BUSI_Dataset(Dataset):
         return len(self.image_paths)
 
 train_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.RandomResizedCrop(size=224, scale=(0.8, 1.0), ratio=(0.8, 1.25)),
+    transforms.Resize((setting.INPUT_SIZE, setting.INPUT_SIZE)),
+    transforms.RandomResizedCrop(size=setting.INPUT_SIZE, scale=(0.8, 1.0), ratio=(0.8, 1.25)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.18,0.18,0.18], std=[0.24,0.24,0.24])
 ])
 
 valid_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((setting.INPUT_SIZE, setting.INPUT_SIZE)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.18,0.18,0.18], std=[0.24,0.24,0.24])
 ])
