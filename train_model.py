@@ -4,7 +4,7 @@
 @FilePath: train_model.py
 @Author: Xu Mingyu
 @Date: 2022-03-26 19:53:31
-@LastEditTime: 2022-04-04 17:15:50
+@LastEditTime: 2022-04-04 17:59:27
 @Description: 
 @Copyright 2022 Xu Mingyu, All Rights Reserved. 
 """
@@ -51,8 +51,8 @@ def main():
 
         model.to(setting.DEVICE)
 
-        # criterion = nn.CrossEntropyLoss()
-        criterion = FocalLoss(class_num=3)
+        criterion = nn.CrossEntropyLoss()
+        # criterion = FocalLoss(class_num=3)
         optimizer = optim.AdamW(model.parameters(), lr=setting.LR, weight_decay=setting.WEIGHT_DECAY)
         scheduler = StepLR(optimizer, step_size=10, gamma=0.3)
         

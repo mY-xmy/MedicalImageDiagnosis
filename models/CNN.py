@@ -4,7 +4,7 @@
 @FilePath: CNN.py
 @Author: Xu Mingyu
 @Date: 2022-03-26 21:33:28
-@LastEditTime: 2022-04-04 17:11:26
+@LastEditTime: 2022-04-04 18:19:16
 @Description: 
 @Copyright 2022 Xu Mingyu, All Rights Reserved. 
 """
@@ -59,15 +59,6 @@ class CNN(nn.Module):
             # nn.Dropout(0.1),
             nn.Linear(64, num_class),
         )
-        
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-            elif isinstance(m, nn.BatchNorm2d):
-                m.weight.data.fill_(1)
-                m.bias.data.zero_()
-            elif isinstance(m, nn.Linear):
-                m.bias.data.zero_()
 
     def forward(self, x):
         bs = x.shape[0]
