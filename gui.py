@@ -4,7 +4,7 @@
 @FilePath: gui.py
 @Author: Xu Mingyu
 @Date: 2022-03-26 19:53:07
-@LastEditTime: 2022-03-26 23:09:37
+@LastEditTime: 2022-04-04 18:41:06
 @Description: 
 @Copyright 2022 Xu Mingyu, All Rights Reserved. 
 """
@@ -24,7 +24,7 @@ class Diagnosis(QMainWindow):
     def init_ui(self):
         # self.setWindowIcon(QtGui.QIcon('./icon.jpg'))
         self.resize(640,520)
-        self.setFixedSize(self.width(), self.height())
+        # self.setFixedSize(self.width(), self.height())
         self.setWindowTitle('医疗图像诊断')
 
         self.lb_name_1 = QLabel('实际类别：', self)
@@ -34,7 +34,7 @@ class Diagnosis(QMainWindow):
         self.lb_label.setGeometry(500, 60, 100, 35)
 
         self.lb_name_2 = QLabel('识别结果：', self)
-        self.lb_name_2.setGeometry(500, 100, 120, 35)
+        self.lb_name_2.setGeometry(500, 100, 100, 35)
 
         self.lb_result = QLabel(self)
         self.lb_result.setGeometry(500, 140, 100, 35)
@@ -105,7 +105,7 @@ class Diagnosis(QMainWindow):
         # prob = [0.1, 0.7, 0.2]
         print(predicted, prob)
         self.lb_result.setText(label_decode(predicted))
-        self.lb_confidence.setText("normal: {:.2f} \nbenign: {:.2f} \nmalignant: {:.2f}".format(prob[0], prob[1], prob[2]))
+        self.lb_confidence.setText("normal: {:.2f} \nbenign: {:.2f} \nmalign: {:.2f}".format(prob[0], prob[1], prob[2]))
         
     def Quit(self):
         self.close()
