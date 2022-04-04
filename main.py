@@ -4,7 +4,7 @@
 @FilePath: main.py
 @Author: Xu Mingyu
 @Date: 2022-03-26 19:51:56
-@LastEditTime: 2022-03-26 23:29:46
+@LastEditTime: 2022-04-04 14:37:19
 @Description: 
 @Copyright 2022 Xu Mingyu, All Rights Reserved. 
 """
@@ -17,7 +17,7 @@ from gui import Diagnosis
 
 from utils import valid_transform
 from PIL import Image
-from model import AlexNet
+from models.CNN import AlexNet
 import setting
 
 import pdb

@@ -4,7 +4,7 @@
 @FilePath: train_model.py
 @Author: Xu Mingyu
 @Date: 2022-03-26 19:53:31
-@LastEditTime: 2022-04-03 18:48:30
+@LastEditTime: 2022-04-04 17:15:50
 @Description: 
 @Copyright 2022 Xu Mingyu, All Rights Reserved. 
 """
@@ -15,11 +15,15 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
 
 from utils import get_train_val_data, BUSI_Dataset, train_transform, valid_transform
+from utils import FocalLoss
 import setting
 
-from model import AlexNet, CNN
+from models.CNN import AlexNet, CNN
+from models.WideResNet import Wide_ResNet
+from models.resnet_cbam import resnext50_32x4d
 
 import pdb
 
@@ -33,12 +37,24 @@ def main():
         train_loader = DataLoader(dataset=train_data, batch_size=setting.BATCH_SIZE, shuffle=True)
         valid_loader = DataLoader(dataset=valid_data, batch_size=1)
 
+        # AlexNet
         # model = AlexNet(3, init_weights=True)
-        model = CNN(3)
+
+        # CNN with CBAM Attention
+        model = CNN(num_class=3, num_layer=setting.NUM_LAYER, channels=setting.CHANNELS, with_attention=setting.WITH_ATTENTION)
+        
+        # Wide ResNet
+        # model = Wide_ResNet(16, 10, 0.2, 3)
+
+        # ResNet with CBAM Attention
+        # model = resnext50_32x4d(pretrained=True)
+
         model.to(setting.DEVICE)
 
-        criterion = nn.CrossEntropyLoss()
+        # criterion = nn.CrossEntropyLoss()
+        criterion = FocalLoss(class_num=3)
         optimizer = optim.AdamW(model.parameters(), lr=setting.LR, weight_decay=setting.WEIGHT_DECAY)
+        scheduler = StepLR(optimizer, step_size=10, gamma=0.3)
         
         max_acc = 0.
         reached = 0  # which epoch reached the max accuracy
@@ -69,6 +85,7 @@ def main():
                         epoch, setting.MAX_EPOCH, i+1, len(train_loader), loss_mean, train_acc))
                     loss_mean = 0.
             
+            scheduler.step()
             if epoch % setting.VAL_INTERVAL == 0:
                 model.eval()
                 correct = 0
@@ -102,7 +119,7 @@ def main():
                         max_acc = val_acc
                         reached = epoch
                         best_confusion_mat = matrix
-                        torch.save(model, os.path.join(setting.MODEL_PATH, "3layer-CNN_fold_%d.pt" % fold))
+                        torch.save(model, os.path.join(setting.MODEL_PATH, "5CNN_fold_%d.pt" % fold))
 
                     print("Valid:\t Epoch[{:0>3}/{:0>3}] Iteration[{:0>3}/{:0>3}] Loss: {:.4f} Acc:{:.2%}\n".format(
                         epoch, setting.MAX_EPOCH, i+1, len(valid_loader), loss_val, val_acc))
