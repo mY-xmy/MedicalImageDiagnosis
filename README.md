@@ -2,7 +2,7 @@
  * @FilePath: README.md
  * @Author: Xu Mingyu
  * @Date: 2022-03-26 23:53:22
- * @LastEditTime: 2022-04-04 18:57:02
+ * @LastEditTime: 2022-04-04 18:58:06
  * @Description: 
  * Copyright 2022 Xu Mingyu, All Rights Reserved. 
 -->
@@ -18,6 +18,7 @@ python main.py
 python train_model.py
 ```
 - 修改参数
+
 在setting.py中修改
 
 ## 运行展示
